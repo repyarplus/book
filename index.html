@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+    	<meta charset="utf-8" />
+    	<meta name="viewport" content="width=device-width, initial-scale=1" />
+    	<title>Book Repyar</title>
+		
+		<style>
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+		 body {
+            font-family: "Open Sans", sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+			background-color: #141414;
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+            height: 200px;
+            cursor: pointer;
+            transition: transform 0.3s;
+			background-color: aliceblue;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .card img {
+            height: 150px;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .banner {
+            width: 100vw;
+            height: 50vw;
+        }
+
+        form {
+            background-color: #e3e3e3;
+            color: #333;
+            border-radius: 10px;
+            padding: 5px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="datetime-local"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+            margin: 5px 0;
+            font-family: "Open Sans", sans-serif;
+        }
+
+        button[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+		</style>
+	</head>
+	<body>
+		<img class = "banner" src="banner.jpg" />
+    	<form name="Leads">
+			<input name="service" value="" hidden/>
+			
+			<h3>Select Your Services</h3>
+			<div id="services" style="display: flex; flex-wrap: wrap; justify-content: center;">
+				<label for="service1">
+					<div class="card">
+						<h3><input class="service-list" type="checkbox" id="service1" value="inspection"> Full Vehicle Inspection</h3>
+						<img src="ins.jpg"/>
+					</div>
+				</label><br>
+				
+				<label for="service2">
+					<div class="card">
+						<h3><input class="service-list" type="checkbox" id="service2" value="general service"> General Servicing</h3>
+						<img src="general.jpg"/>
+					</div>
+				</label><br>
+				
+				<label for="service3">
+					<div class="card">
+						<h3><input class="service-list" type="checkbox" id="service3" value="parts"> Parts Replacement</h3>
+						<img src="parts.jpg"/>
+					</div>
+				</label><br>
+				
+				<label for="service4">
+					<div class="card">
+						<h3><input class="service-list" type="checkbox" id="service4" value="dent and paint"> Denting and Painting</h3>
+						<img src="dent.jpg"/>
+					</div>
+				</label><br>
+
+				<label for="service5">
+					<div class="card">
+						<h3><input class="service-list" type="checkbox" id="service5" value="others"> Other Car Issue</h3>
+						<img src="other.jpg"/>
+					</div>
+				</label><br>
+			</div>
+			<input
+				name="remark"
+				type="text"
+				placeholder="Remarks for your issue"
+				required
+			/><br>
+			
+			<input
+				name="vehicle"
+				type="text"
+				placeholder="Vehicle Name"
+				required
+			/><br>
+			
+			<label><h3>Your Preferred Time and Date</h3>
+			<input
+				name="appointment"
+				type="datetime-local"
+				required
+			/>
+			</label><br>
+
+			<input
+                name="phoneNumber"
+                type="tel"
+                pattern="[0-9]{10}"
+                placeholder="Phone Number"
+                required
+            /><br>
+			
+			<input
+				name="name"
+				type="text"
+				placeholder="Your Full Name"
+				required
+			/><br>
+
+			<input
+				name="address"
+				type="text"
+				placeholder="Your Address"
+				required
+			/><br>
+			
+			<button type="submit">Submit</button>
+		</form>
+		<div id="thankYou" class = "card" style="display: none; margin-left: 50%; transform: translate(-50%, 0)">
+			<h3>Thank You for Booking</h3>
+			<h3>Our Expert Technician Will Call You Soon</h3>
+		</div>
+	<script>
+	function serviceValue() {
+		let serviceList = [];
+		let cards = document.getElementsByClassName("service-list");
+		
+		for (let item of cards) {
+			if(item.checked) serviceList.push(item.value);
+		}
+		
+		document.forms['Leads'].service.value = serviceList.toString();
+	}
+	
+	function afterSubmit() {
+		let thankYou = document.getElementById("thankYou");
+		document.forms['Leads'].style.display = "none";
+		thankYou.style.display = "block";
+	}
+	
+    const scriptURL ="https://script.google.com/macros/s/AKfycby7lrCuwHLaMGg14BT3EsngxBfFBDy9NstC_sn8oXZOUMus8-F7rhwmAXPafWkzlEICqw/exec";
+	const form = document.forms["Leads"];
+
+	form.addEventListener("submit", (e) => {
+		e.preventDefault();
+		serviceValue();
+		fetch(scriptURL, { method: "POST", body: new FormData(form) })
+		.then((response) => {
+			console.log("Success!", response);
+      	// Additional function call after the fetch is successful
+			afterSubmit();
+    	})
+		.catch((error) => {
+			console.error("Error!", error.message);
+      	// Additional function call if there's an error with the fetch
+    	});
+	});
+</script>
